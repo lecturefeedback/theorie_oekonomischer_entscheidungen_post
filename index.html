@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Dein Feedback für Töe</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet"> <!-- normale cards -->
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@200;400;600&display=swap" rel="stylesheet"> <!-- thank you card -->
+
+<style>
+  body {
+    margin: 0;
+    font-family: "Inter", sans-serif;
+    background: linear-gradient(135deg, #0f172a, #1e293b);
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100dvh;
+    padding: 20px;
+  }
+
+  .card {
+    width: 90%;
+    max-width: 600px;
+    background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(12px);
+    border-radius: 20px;
+    padding: 40px;
+    box-sizing: border-box;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+  }
+
+  .form-header {
+    font-size: 14px;
+    color: rgba(255,255,255,0.4);
+    margin-bottom: 12px;
+    letter-spacing: 1px;
+  }
+  
+  h1 {
+    font-size: 26px;
+    margin-bottom: 10px;
+  }
+
+  .highlight {
+    color: #38bdf8; /*-- rgb(255, 166, 64) */
+    font-weight: bolder;
+  }
+
+  .highlight2 {
+    color: #38bdf8;
+  }
+
+  .subtext {
+    font-size: 18px;
+    opacity: 0.8;
+    font-weight: 400;
+  }
+
+  input {
+    width: 100%;
+    padding: 15px;
+    border-radius: 12px;
+    border: none;
+    margin-top: 10px;
+    font-size: 16px;
+  }
+
+  .progress,
+  input,
+  textarea,
+
+  .thankyou-img {
+    width: 100%;
+    box-sizing: border-box;
+  }
+  
+button {
+  margin-top: 20px;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 12px;
+  background: #38bdf8;
+  color: black;
+  font-weight: bold;
+  cursor: pointer;
+  width: 100%;
+}
+
+.back-btn {
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.45);
+  color: white;
+  transition: background 0.3s, color 0.3s, border 0.3s;
+}
+
+.back-btn:hover {
+  background: #38bdf8;
+  border: 1px solid transparent;
+  color: black;
+}
+
+.no-answer-btn {
+  background: transparent;
+  border: none;
+  color: rgba(255,255,255,0.45);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.space-btn {
+  background: transparent;
+  flex: 1;
+  pointer-events: none;
+}
+
+button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+
+.btn-wrapper {
+  position: relative;
+  width: 100%;
+  margin-top: 10px;
+}
+
+.btn-wrapper button {
+  width: 100%;
+}
+
+.slider-container {
+  margin-top: 0px;
+}
+
+#frequencySlider {
+  width: 100%;
+}
+
+.slider-label {
+  margin-top: 0px;
+  font-size: 16px; /* gleiche Größe wie deine Inputs */
+  color: rgb(228, 228, 228);
+  text-align: left;
+}
+
+.tooltip {
+  position: absolute;
+  bottom: 190%;
+  left: 52%;
+  transform: translateX(-50%);
+  background: rgba(218, 102, 48, 0.85);
+  color: white;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 14px;
+  white-space: nowrap;
+  opacity: 0;
+  visibility: hidden;
+  transition: 0.2s;
+}
+
+.btn-row {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+  position: relative;
+}
+
+.btn-row button {
+  flex: 1;
+  padding: 10px 14px;
+  font-size: 14px;
+}
+
+.confirm-btn {
+  display: none;
+}
+
+/* Tooltip wenn Button disabled UND hover */
+.btn-wrapper button:disabled:hover + .tooltip {
+  opacity: 1;
+  visibility: visible;
+  animation: wiggle 0.22s ease-in-out 1;
+}
+
+/* Standard: versteckt */
+.tooltip {
+  opacity: 0;
+  visibility: hidden;
+  transition: 0.2s;
+}
+
+  .step {
+    display: none;
+    animation: fade 0.4s ease;
+  }
+
+  .step.active {
+    display: block;
+  }
+
+  @keyframes fade {
+    from {opacity: 0; transform: translateY(10px);}
+    to {opacity: 1; transform: translateY(0);}
+  }
+
+.progress {
+  height: 6px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 10px;
+  margin-bottom: 30px;
+  overflow: hidden;
+}
+
+.bar {
+  height: 100%;
+  width: 0%;
+  background: #38bdf8;
+  transition: width 0.3s;
+}
+
+
+.thankyou-card {
+  margin-left: -40px;
+  margin-right: -40px;
+  margin-bottom: -40px; /* hebt card-padding auf */
+  height: calc(100% + 80px);
+
+  font-family: "Barlow Condensed", sans-serif;
+
+  background-image: linear-gradient(
+    to bottom,
+    rgba(8,12,25,0.55),
+    rgba(8,12,25,0.92) ),
+    url("Astronaut.png");
+
+  background-size: cover;
+  background-position: top center;
+  background-repeat: no-repeat;
+  overflow: hidden;
+
+  min-height: 500px;
+
+  box-shadow:
+    0 20px 60px rgba(0,0,0,0.45);
+
+  position: relative;
+  border-radius: 0px 0px 20px 20px;
+}
+
+.thankyou-overlay {
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  min-height: 400px;
+  color: white;
+}
+
+.thankyou-card h1 {
+  font-weight: 600;
+  font-size: 65px;
+  line-height: 1;
+  margin-top: -5px;
+  margin-bottom: 0px;
+}
+
+.subtext2 {
+  font-weight: 400;
+  font-size: 18px;
+  opacity: 0.8;
+}
+
+.thankyou-card input {
+  padding: 18px;
+  border-radius: 16px;
+  border: none;
+  margin-top: 15px;
+  margin-bottom: -30px;
+  font-size: 16px;
+}
+
+.thankyou-card .btn-row {
+  margin-top: 10px;
+  margin-bottom: 8px;
+  display: flex;
+  gap: 14px;
+}
+
+.thankyou-card button {
+  flex: 1;
+
+  padding: 16px;
+
+  border-radius: 16px;
+
+  border: none;
+
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.thankyou-img {
+  width: 100%;
+  box-sizing: border-box;
+  max-width: 420px;
+  height: auto;
+  display: block;
+  margin: 20px auto;
+  border-radius: 16px;
+  object-fit: cover;
+}
+
+.quote {
+  margin-top: 5px;
+  font-size: 16px;
+  opacity: 0.9;
+  line-height: 1.4;
+}
+
+.quotemailtext {
+  margin-top: 0px;
+  font-size: 20px;
+  opacity: 0.9;
+  line-height: 1.4;
+  font-weight: 550;
+  font-stretch: condensed;
+}
+
+.divider-blue {
+  border: none;
+  border-top: 3px solid #38bdf8;
+  width: 12%;
+  margin: 10px 0;
+}
+
+.email-box {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 24px 28px;
+  margin-top: 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+.quotemailtext {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.mail-icon {
+  flex-shrink: 0;
+  margin-left: 8px;
+}
+
+.mobile-only {
+  display: none;
+}
+
+@media (max-width: 480px) {
+  body {
+    min-height: 130dvh;
+    padding: 10px;
+  }
+  
+  .card {
+    padding: 20px; /* statt 40px */
+    width: 95%;
+  }
+
+  .thankyou-card {
+    margin-left: -20px;
+    margin-right: -20px;
+    margin-bottom: -20px;
+    height: calc(100% + 40px);
+    border-radius: 0px 0px 16px 16px;
+  }
+
+  .thankyou-overlay {
+    padding: 18px;
+  }
+
+  .thankyou-card h1 {
+    font-size: 50px;
+  }
+
+  .email-box {
+    padding: 6px 7px; /* statt 24px 28px */
+  }
+
+  .mobile-only {
+    display: block;
+  }
+
+  .space-btn {
+    display: none
+  }
+
+  .no-answer-btn {
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.45);
+    color: white;
+  }
+
+}
+
+@media (min-width: 481px) {
+  .confirm-btn {
+    display: block;
+  }
+}
+
+@keyframes wiggle {
+  0%, 100% {transform: translateX(-50%)}
+  20% {transform: translateX(calc(-50% - 2px))}
+  40% {transform: translateX(calc(-50% + 2px));}
+  60% {transform: translateX(calc(-50% - 1px));}
+  80% {transform: translateX(calc(-50% + 1px));}
+}
+
+textarea {
+  width: 100%;
+  padding: 15px;
+  border-radius: 12px;
+  border: none;
+  margin-top: 10px;
+  font-size: 16px;
+  font-family: "Inter", sans-serif;
+  line-height: 1.6;
+  resize: none; /* kein manuelles Vergrößern */
+  min-height: 80px;
+  box-sizing: border-box;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="card">
+
+  <div class="form-header">2026S404020 VO Ökonomie des öffentlichen Sektors</div> <!-- Titel der VO -->
+  <div class="progress">
+    <div class="bar" id="bar"></div>
+  </div>
+
+  <form id="form">
+
+    <!-- STEP 1 ONE THING -->
+    <div class="step active">
+      <h1> Wenn du <span class="highlight">eine Sache</span> an der Vorlesung ändern könntest, was wäre es?</h1>
+      <textarea name="firstthing" placeholder="Jetzt bist du dran..." required></textarea>
+      
+      <div class="btn-wrapper">
+        <button type="button" id="nextBtn" onclick="next()" disabled>
+          Weiter
+        </button>
+        <span class="tooltip">wirklich nur EINE Sache, pls 👀</span>
+      </div>
+    </div>
+    
+    <!-- STEP 2  SLIDER 1 -->
+    <div class="step">
+      <h1>Wie häufig warst du in der Vorlesung?</h1>
+      <input type="hidden" name="frequency" id="frequencyInput">
+
+      <div class="slider-container">
+        <input type="range" min="0" max="4" step="1" id="frequencySlider">
+        <div class="slider-label" id="sliderLabel"></div>
+      </div>
+
+      <div class="btn-row">
+        <button type="button" class="back-btn" onclick="back()">Zurück</button>
+        <button type="button" class="no-answer-btn" onclick="setNoAnswer()">Keine Angabe</button>
+        <button type="button" class="confirm-btn" onclick="confirmSlider()">Weiter</button>
+      </div>
+    </div>
+
+    <!-- STEP 3 CONDITIONAL -->
+    <div class="step">
+      <h1>Woran hat's gelegen? <br class="mobile-only"> <span class="subtext">(fragt man sich immer)</span> </h1>
+      <input name="reason"  placeholder="Ich sag mal so..."/>
+
+      <div class="btn-row">
+        <button type="button" class="back-btn" onclick="back()">Zurück</button>
+        <div class="space-btn"></div>
+        <button type="button" onclick="next()">Weiter</button>
+      </div>
+    </div>
+    
+    <!-- STEP 4 SLIDER 2 -->
+    <div class="step">
+      <h1>Wie relevant fandest du die Inhalte?</h1>
+      <input type="hidden" name="relevance" id="relevanceInput">
+
+      <div class="slider-container">
+        <input type="range" min="0" max="4" step="1" id="relevanceSlider">
+        <div class="slider-label" id="sliderLabel2"></div>
+      </div>
+
+      <div class="btn-row">
+        <button type="button" class="back-btn" onclick="back()">Zurück</button>
+        <button type="button" class="no-answer-btn" onclick="setNoAnswer()">Keine Angabe</button>
+        <button type="button" class="confirm-btn" onclick="confirmSlider2()">Weiter</button>
+      </div>
+    </div>
+
+    <!-- STEP 5 -->
+    <div class="step">
+      <h1>Fällt dir noch was ein?</h1>
+      <input name="secondthing" placeholder="noch mehr Ideen? rein damit!"/>
+      <div class="btn-row">
+        <button type="button" class="back-btn" onclick="back()">Zurück</button>
+        <div class="space-btn"></div>
+        <button type="submit">Absenden  ✓</button>
+      </div>
+    </div>
+
+    
+    <!-- STEP 6 THANK YOU -->
+    <div class="step">
+      <div class="thankyou-card">
+        <div class="thankyou-overlay">
+
+          <h1>DANKE FÜR<br> <span class="highlight2">DEIN FEEDBACK!</span></h1>
+
+          <hr class="divider-blue">
+      
+          <div class="subtext2">
+            Ein kleiner Augenblick für einen Menschen,<br>
+            aber ein großer für die Universität Innsbruck. <br><br><br><br><br><br><br>
+          </div>
+
+          <div class="email-box">
+            <div class="quotemailtext">
+              <svg class="mail-icon" xmlns="http://www.w3.org/2000/svg" width="36" height="36" 
+                  viewBox="0 0 24 24" fill="none" stroke=#38bdf8 
+                  stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect width="20" height="16" x="2" y="4" rx="2"/>
+                <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
+              </svg>
+              MÖCHSTEST DU DIE ERGEBNISSE<br>PER E-MAIL BEKOMMEN?
+            </div>
+
+            <input type="email" name="email" placeholder="deine@email.at">
+
+            <div class="btn-row">
+              <button type="button" onclick="submitMail()">Anmelden</button>
+            </div>
+            <div class="subtext2"> *   E-Mail Adressen werden anonym gespeichert. </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 7 Mail gespeichert -->
+    <div class="step">
+      <h1>Deine E-Mail wurde gespeichert!</h1>
+
+      <div class="quote">
+        Sobald die Umfrage abgeschlossen und die Ergebnisse ausgewertet sind, wirst du benachrichtigt.
+      </div>
+    </div>
+
+  </form>
+
+</div>
+
+<script>
+let step = 0;
+let skippedStep = false;
+let sliderUsed = false;
+const steps = document.querySelectorAll(".step");
+const bar = document.getElementById("bar");
+const form = document.getElementById("form");
+const input = document.querySelector('[name="firstthing"]');
+const nextBtn = document.getElementById('nextBtn');
+const frequencyInput = document.getElementById("frequencyInput");
+const relevanceInput = document.getElementById("relevanceInput");
+const slider = document.getElementById("frequencySlider");
+const slider2 = document.getElementById("relevanceSlider");
+const sliderLabel = document.getElementById("sliderLabel");
+const sliderLabel2 = document.getElementById("sliderLabel2");
+const card = document.querySelector(".card");
+const SUPABASE_URL = "https://npfvurxupmvjhkiwkudc.supabase.co";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5wZnZ1cnh1cG12amhraXdrdWRjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgzMTk5MzMsImV4cCI6MjA5Mzg5NTkzM30.-nRPsD7McszSQMkqtbW-ms8110BZGAj7Tdcs1a5Log4";
+
+// === GRUPPEN-LOGIK ===
+// Welche Gruppe geantwortet hat, wird über den URL-Parameter ?gruppe=1|2|3|4 gesteuert
+// und in der Spalte "group_id" mitgespeichert. Eine einzige Tabelle für alle Gruppen.
+// Beispiel-Links zum Verschicken:
+//   .../?gruppe=1   .../?gruppe=2   .../?gruppe=3   .../?gruppe=4
+// Wenn kein gültiger Parameter übergeben wird, fällt es auf Gruppe 1 zurück.
+const urlParams = new URLSearchParams(window.location.search);
+let gruppe = urlParams.get("gruppe");
+if (!["1", "2", "3", "4"].includes(gruppe)) {
+  gruppe = "0";
+}
+const GROUP_NUMBER = Number(gruppe);
+const RESPONSES_TABLE = "ResponsesToe";
+const MAILS_TABLE = "MailsToe";
+// === ENDE GRUPPEN-LOGIK ===
+
+const values = [
+  "Nie",
+  "Selten",
+  "Mal so, mal so",
+  "Häufig",
+  "Immer"
+];
+const values2 = [
+  "Überhaupt nicht relevant",
+  "Wenig relevant",
+  "Teils, teils",
+  "Relevant",
+  "Super relevant"
+];
+
+async function submitSurvey(data) {
+  const response = await fetch(
+    `${SUPABASE_URL}/rest/v1/${RESPONSES_TABLE}`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "apikey": SUPABASE_KEY,
+        "Authorization": `Bearer ${SUPABASE_KEY}`,
+        "Prefer": "return=minimal"
+      },
+      body: JSON.stringify(data)
+    }
+  );
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    console.error("SUPABASE ERROR:", errorText);
+    alert(errorText);
+  }
+
+  return response.ok;
+}
+
+//1. Slider
+sliderLabel.textContent = "Gastauftritt oder Stammgast?";
+frequencyInput.value = "";
+
+slider.addEventListener("input", () => {
+  const value = values[slider.value];
+  sliderLabel.textContent = value;
+  frequencyInput.value = value;
+  sliderUsed = true
+   if (value === "Immer" && value === "Häufig") {
+    skippedStep = true;
+  } else {
+    skippedStep = false;
+  }
+});
+
+//bei Loslassen am Handy automatisch weiter
+slider.addEventListener("touchend", () => {
+  if (!sliderUsed) return;
+  if (window.matchMedia("(max-width: 480px)").matches) {
+    setTimeout(() => {
+      const value = values[slider.value];
+      if (value === "Immer" || value === "Häufig") {
+        skippedStep = true;
+        form.reason.value = "";
+        skip();
+      } else {
+        skippedStep = false;
+        next();
+      }
+      sliderUsed = false;
+    }, 600); // 600ms Verzögerung, anpassen nach Bedarf
+  }
+});
+
+function confirmSlider() {
+  const value = values[slider.value];
+  if (value === "Immer" || value === "Häufig"|| value === "") {
+    skippedStep = true;
+    form.reason.value = "";
+    skip();
+  } else {
+    skippedStep = false;
+    next();
+  }
+}
+
+input.addEventListener('input', function () {
+  if (input.value.trim().length > 0) {
+    nextBtn.disabled = false;
+  } else {
+    nextBtn.disabled = true;
+  }
+});
+
+//2. Slider
+sliderLabel2.textContent = "Pflichtprogramm oder wirklich interessant?";
+relevanceInput.value = ""
+
+slider2.addEventListener("input", () => {
+  const value = values2[slider2.value];
+  sliderLabel2.textContent = value;
+  relevanceInput.value = value;
+  sliderUsed = true
+});
+
+slider2.addEventListener("touchend", () => {
+  if (!sliderUsed) return;
+  if (window.matchMedia("(max-width: 480px)").matches) {
+    setTimeout(() => {
+      next();
+      sliderUsed = false;
+    }, 600);
+  }
+});
+
+function confirmSlider2() {
+  next();
+}
+
+function updateBar() {
+  bar.style.width = ((step) / (steps.length - 2)) * 100 + "%";
+}
+
+function next() {
+  steps[step].classList.remove("active");
+  step++;
+  steps[step].classList.add("active");
+  updateBar();
+  if (window.matchMedia("(max-width: 480px)").matches) {
+    scrollToCard();
+  }
+}
+
+function skip() {
+  steps[step].classList.remove("active");
+  step += 2;
+  steps[step].classList.add("active");
+  updateBar();
+  if (window.matchMedia("(max-width: 480px)").matches) {
+    scrollToCard();
+  }
+  skippedStep = true;
+}
+
+function setNoAnswer() {
+  if (step === 1) {
+    skip()
+    frequencyInput.value = "Keine Angabe"
+    form.reason.value = "";
+  } else {
+    relevanceInput.value = "Keine Angabe"
+    next()
+  }
+}
+
+function back() {
+  steps[step].classList.remove("active");
+
+  if (skippedStep && step === 3) {
+    step -= 2; //skip frage 3
+  } else {
+    step--;
+  }
+
+  steps[step].classList.add("active");
+  updateBar();
+  if (window.matchMedia("(max-width: 480px)").matches) {
+    scrollToCard();
+  }
+}
+
+function scrollToCard() {
+  setTimeout(() => {
+    const card = document.querySelector('.card');
+    const cardTop = card.getBoundingClientRect().top + window.scrollY;
+    const cardHeight = card.offsetHeight;
+    const windowHeight = window.innerHeight;
+    
+    window.scrollTo({
+      top: cardTop - (windowHeight / 2) + (cardHeight / 2),
+      behavior: 'smooth'
+    });
+  }, 50);
+}
+  
+form.addEventListener("submit", async function(e) {
+  e.preventDefault();
+
+  const data = {
+    group_id: GROUP_NUMBER,
+    frequency: frequencyInput.value,
+    relevance: relevanceInput.value,
+    reason: form.reason.value,
+    firstthing: form.firstthing.value,
+    secondthing: form.secondthing.value
+  };
+
+  const success = await submitSurvey(data);
+
+  if(success){
+    next();
+  } else {
+    alert("Fehler beim Speichern.");
+  }
+});
+
+async function submitMail() {
+  const email = document.querySelector('input[name="email"]').value;
+
+  if (!email) return;
+
+  const response = await fetch(
+    `${SUPABASE_URL}/rest/v1/${MAILS_TABLE}`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "apikey": SUPABASE_KEY,
+        "Authorization": `Bearer ${SUPABASE_KEY}`,
+        "Prefer": "return=minimal"
+      },
+      body: JSON.stringify({ email, group_id: GROUP_NUMBER })
+    }
+  );
+
+  if(response.ok){
+    next();
+  } else {
+    const errorText = await response.text();
+    console.error("SUPABASE ERROR:", errorText);
+    alert(errorText);
+  }
+};
+
+window.addEventListener('load', () => {
+  if (window.matchMedia("(max-width: 480px)").matches) {
+    scrollToCard();
+  }
+});
+</script>
+</body>
+</html>
